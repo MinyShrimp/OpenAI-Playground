@@ -1,4 +1,5 @@
-from hello_gpt import create_openai
+from common import measure
+from hello_gpt import moderation
 
 if __name__ == '__main__':
-    create_openai.create()
+    measure(moderation.moderation_test)

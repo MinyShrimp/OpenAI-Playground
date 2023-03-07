@@ -6,8 +6,9 @@ Author: 김회민 ksk7584@gmail.com
 
 # 사용법
 
-`from common import EnvLoader`
-`EnvLoader.load()`
+from common import EnvLoader
+
+EnvLoader.load()
 '''
 
 
@@ -28,7 +29,7 @@ class EnvLoader:
         * 없다면 해당 폴더에 .env 파일을 불러와 확인
         * OPENAI_API_KEY 의 값이 어느 곳에도 없으면 예외
 
-        :raise: 환경 설정에서 OPENAI_API_KEY 가 없다면 예외가 발생됩니다.
+        :raise 환경 설정에서 OPENAI_API_KEY 가 없다면 예외가 발생됩니다.
         """
         if cls.__load_env() is False:
             import dotenv
