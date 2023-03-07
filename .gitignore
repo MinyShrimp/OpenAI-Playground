@@ -1,2 +1,8 @@
-*.xlsx
+# Datas
 /venv
+*.xlsx
+
+# Environments
+.env*
+
+# idea
