@@ -8,6 +8,8 @@
 
 ### [OpenAI - 사용법](docs/OpenAI_사용_기초.md)
 
+### [OpenAI - 기능 - Moderation](docs/OpenAI_Moderation.md)
+
 ### [OpenAI - 기능 - FineTuning](docs/OpenAI_FineTuning.md)
 
 ### [OpenAI - 기능 - Classfication](docs/OpenAI_Classification.md)

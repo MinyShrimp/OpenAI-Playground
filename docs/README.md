@@ -15,6 +15,12 @@
 * NodeJS
 * OpenAI 를 사용하는 오픈 소스 라이브러리
 
-## [OpenAI - 기능 - FineTuning](OpenAI_FineTuning.md)
+## [Moderation - 검증](OpenAI_Moderation.md)
 
-## [OpenAI - 기능 - Classfication](OpenAI_Classification.md)
+* 소개
+* 지침
+* 사용법
+
+## [FineTuning - 미세 조정](OpenAI_FineTuning.md)
+
+## [Classfication - 분류](OpenAI_Classification.md)
