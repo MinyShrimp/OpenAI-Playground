@@ -3,7 +3,7 @@ import os
 import openai
 
 from common import EnvLoader, measure
-from hello_gpt.fine_tuning_file import Files
+from hello_gpt.files import Files
 
 if __name__ == '__main__':
     EnvLoader.load()
