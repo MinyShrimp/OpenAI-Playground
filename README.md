@@ -30,11 +30,33 @@
 
 이 기능들을 사용해서 **새로운 콘텐츠 생성**은 물론, **의미 검색 및 분류**로 이용할 수 있습니다.
 
-## OpenAI 가 제공하는 라이브러리
+## 모델
+
+## 기능
+
+### fine-tuning
+
+사전 학습 데이터를 기준으로 새로운 프롬프트의 값을 추출하는 기법
+
+### classification
+
+상품명/옵션명을 기준으로 제조사/브랜드. 카테고리가 분류된 데이터를 모델링하여 학습하는 기법
+
+- 새로운 상품명/옵션명이 입력될 때 미리 학습된 데이터 기준으로 제조사/브랜드를 추출하는 방법론에 대한 기술
+
+## 사용
+
+### HTTP API
+
+```curl
+curl https://api.openai.com/v1/models \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'OpenAI-Organization: org-9Gx6g2oFAv8Z9r4bVCEsQMTZ'
+```
 
 ### Python
 
-```
+```console
 $ pip install openai
 ```
 
@@ -57,7 +79,7 @@ print(response)
 
 #### Python CLI
 
-```
+```console
 $ openai -h
 usage: openai [-h] [-v] [-b API_BASE] [-k API_KEY] [-o ORGANIZATION] {api,tools,wandb} ...
 
@@ -78,13 +100,15 @@ optional arguments:
                         Which organization to run as (will use your default organization if not specified)
 ```
 
-```
-$ openai api completions.create -m text-davinci-003 -p "Say this is a test" -t 0 -M 7 --stream
+```console
+$ openai api completions.create \
+    -m text-davinci-003 -p "Say this is a test" \
+    -t 0 -M 7 --stream
 ```
 
 ### NodeJS
 
-```
+```console
 $ npm install openai
 $ yarn install openai
 ```
@@ -108,23 +132,23 @@ const response = await openai.createCompletion({
 console.log(response);
 ```
 
-### OpenAI 를 사용하여 제작된 오픈 소스 라이브러리
+## OpenAI 를 사용한 오픈 소스 라이브러리
 
-* [전체 목록 확인 하기](https://platform.openai.com/docs/libraries/community-libraries)
+> [전체 목록 확인 하기](https://platform.openai.com/docs/libraries/community-libraries)
 
-#### Python
+### Python
 
 * [chronology](https://github.com/OthersideAI/chronology) by OthersideAI
 
-#### Java
+### Java
 
 * [OpenAI-Java](https://github.com/TheoKanning/openai-java) by TheoKanning
 
-#### Kotlin
+### Kotlin
 
 * [OpenAI-Kotlin](https://github.com/Aallam/openai-kotlin) by Mouaad Aallam
 
-#### NodeJS
+### NodeJS
 
 * [openai-api](https://www.npmjs.com/package/openai-api) by Njerschow
 * [openai-api-node](https://www.npmjs.com/package/openai-api-node) by erlapso
@@ -134,24 +158,14 @@ console.log(response);
 * [@dalenguyen/openai](https://www.npmjs.com/package/@dalenguyen/openai) by dalenguyen
 * [tectalic/openai](https://github.com/tectalichq/public-openai-client-js) by tectalic
 
-#### C# / .NET
+### C# / .NET
 
 * [OpenAI.GPT3](https://github.com/betalgo/openai) by Betalgo
-
-### fine-tuning
-
-사전 학습 데이터를 기준으로 새로운 프롬프트의 값을 추출하는 기법
-
-### classification
-
-상품명/옵션명을 기준으로 제조사/브랜드. 카테고리가 분류된 데이터를 모델링하여 학습하는 기법
-
-- 새로운 상품명/옵션명이 입력될 때 미리 학습된 데이터 기준으로 제조사/브랜드를 추출하는 방법론에 대한 기술
 
 ## 프로젝트 설치
 
 * Python 설치 - [Homepage](https://www.python.org/)
-* 프로젝트 Clone
+* 프로젝트 복사
     * `git clone https://github.com/MinyShrimp/OpenAI-Playground.git`
     * `cd OpenAI-Playground`
 * 가상환경 설정
