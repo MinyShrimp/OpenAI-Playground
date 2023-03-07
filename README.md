@@ -54,14 +54,14 @@
 
 #### 모델 목록 확인
 
-```http
+```sh
 curl https://api.openai.com/v1/models \
   -H 'Authorization: Bearer OPENAI_API_KEY'
 ```
 
 #### Completions 보내기
 
-```http
+```sh
 curl https://api.openai.com/v1/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer OPENAI_API_KEY" \
@@ -70,7 +70,7 @@ curl https://api.openai.com/v1/completions \
 
 ### Python
 
-```console
+```sh
 $ pip install openai
 ```
 
@@ -93,7 +93,7 @@ print(response)
 
 #### Python CLI
 
-```console
+```sh
 $ openai -h
 usage: openai [-h] [-v] [-b API_BASE] [-k API_KEY] [-o ORGANIZATION] {api,tools,wandb} ...
 
@@ -114,7 +114,7 @@ optional arguments:
                         Which organization to run as (will use your default organization if not specified)
 ```
 
-```console
+```sh
 $ openai api completions.create \
     -m text-davinci-003 -p "Say this is a test" \
     -t 0 -M 7 --stream
@@ -122,7 +122,7 @@ $ openai api completions.create \
 
 ### NodeJS
 
-```console
+```sh
 $ npm install openai
 $ yarn install openai
 ```
