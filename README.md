@@ -46,12 +46,26 @@
 
 ## 사용
 
+### OPENAI_API_KEY 발급
+
+> [View API Keys](https://platform.openai.com/account/api-keys) ( 로그인 필요 )
+
 ### HTTP API
 
-```curl
+#### 모델 목록 확인
+
+```http
 curl https://api.openai.com/v1/models \
-  -H 'Authorization: Bearer YOUR_API_KEY' \
-  -H 'OpenAI-Organization: org-9Gx6g2oFAv8Z9r4bVCEsQMTZ'
+  -H 'Authorization: Bearer OPENAI_API_KEY'
+```
+
+#### Completions 보내기
+
+```http
+curl https://api.openai.com/v1/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer OPENAI_API_KEY" \
+  -d '{"model": "text-davinci-003", "prompt": "Say this is a test", "temperature": 0, "max_tokens": 7}'
 ```
 
 ### Python

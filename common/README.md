@@ -8,6 +8,7 @@ OS 의 환경 설정 (`env`) 을 불러오는 기능을 수행합니다.
 
 ```python
 from common import EnvLoader
+
 EnvLoader.load()
 ```
 
@@ -15,17 +16,17 @@ EnvLoader.load()
 
 **등록 방법 1 (권장)**
 
-OS 환경 설정에 OPEN_AI_KEY 를 등록합니다.
+OS 환경 설정에 OPENAI_API_KEY 를 등록합니다.
 
 * terminal: `vim ~/.bashrc`
-* file: `export OPEN_AI_KEY="Key-String"`
+* file: `export OPENAI_API_KEY="Key-String"`
 * terminal: `source ~/.bashrc`
 
 **등록 방법 2**
 
-프로젝트 Root 폴더에 .env 파일을 생성하여 OPEN_AI_KEY 를 입력합니다.<br>
+프로젝트 Root 폴더에 .env 파일을 생성하여 OPENAI_API_KEY 를 입력합니다.<br>
 이 방법은 `dotenv` 라이브러리를 설치해야합니다.
 
 * terminal: `pip install dotenv`
 * terminal: `vim {project_root}/.env`
-* file: `OPEN_AI_KEY="Key-String"`
+* file: `OPENAI_API_KEY="Key-String"`
