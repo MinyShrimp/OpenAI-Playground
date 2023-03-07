@@ -1,8 +1,10 @@
 # Datas
-/venv
+/data
 *.xlsx
+*.jsonl
 
 # Environments
+/venv
 .env*
 
 # idea

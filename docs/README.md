@@ -23,4 +23,14 @@
 
 ## [FineTuning - 미세 조정](OpenAI_FineTuning.md)
 
+* 소개
+* 훈련 데이터 준비
+* File
+    * 조회
+    * 업로드
+    * 삭제
+    * 검색
+    * 컨텐츠 검색
+* Fine Tuning
+
 ## [Classfication - 분류](OpenAI_Classification.md)

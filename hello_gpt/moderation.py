@@ -1,8 +1,4 @@
-import os
-
 import openai
-
-from common import EnvLoader
 
 '''
 Since: 2023-03-07
@@ -59,11 +55,14 @@ Author: 김회민 ksk7584@gmail.com
 '''
 
 
-def moderation_test() -> None:
-    EnvLoader.load()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    response = openai.Moderation.create(
-        model="text-moderation-latest",
-        input=["I want to kill them.", "I love you"]
-    )
-    print(response)
+class Moderation:
+    @staticmethod
+    def call():
+        """ 해당 요청에 대한 검증
+
+        :return: 위의 주석 참고
+        """
+        return openai.Moderation.create(
+            model="text-moderation-latest",
+            input=["I want to kill them.", "I love you"]
+        )

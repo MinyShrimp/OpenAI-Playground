@@ -1,4 +1,5 @@
 import time
+import traceback
 from typing import Callable
 
 '''
@@ -18,7 +19,7 @@ measure(hello_function)
 
 # Callable[[type, ...], type]
 # == (type, ...) -> type
-def measure(call_back: Callable[[], any]) -> None:
+def measure(call_back: Callable[[], any]):
     """매개변수로 넘어온 함수의 시간을 측정하는 함수
 
     :raise 매개변수의 타입이 () -> any 함수가 아니면 예외가 발생합니다.
@@ -27,9 +28,13 @@ def measure(call_back: Callable[[], any]) -> None:
         raise Exception("매개 변수 'call_back' 은 함수이어야 합니다.")
 
     start = time.time()
-    result = call_back()
-    end = time.time()
+    try:
+        result = call_back()
+        return result
+    except Exception:
+        print(traceback.format_exc())
+    finally:
+        end = time.time()
+        print("[{}] call time: [{}ms]".format(call_back.__name__, (end - start) * 1000))
 
-    print("[{}] call time: [{}ms]".format(call_back.__name__, (end - start) * 1000))
-
-    return result
+    return None

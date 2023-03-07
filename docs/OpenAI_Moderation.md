@@ -51,15 +51,12 @@ import os
 import openai
 
 ai_key = os.getenv("OPENAI_API_KEY")
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-response = openai.Moderation.create(
+openai.Moderation.create(
     model="text-moderation-latest",
     input="I want to kill them."
 )
-
-print(response)
 ```
 
 | Parameter | Type                                               | Value      |
