@@ -1,11 +1,16 @@
-import os
+from common import CommandProcessor
+from common import EnvLoader
 
-import openai
 
-from common import CommandProcessor, EnvLoader
-
-if __name__ == '__main__':
+def init():
     EnvLoader.load()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
+def run():
     processor = CommandProcessor()
     processor.process()
+
+
+if __name__ == '__main__':
+    init()
+    run()
