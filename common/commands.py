@@ -1,6 +1,6 @@
 from enum import Enum
 
-from common import MultiKeyDict
+from . import MultiKeyDict
 
 '''
 Since: 2023-03-08
@@ -91,19 +91,6 @@ class CommandProcessor(object):
         print("Good bye")
         return CommandProcessor.ReturnStatus.QUIT
 
-    def __process(self, command: str) -> ReturnStatus:
-        """ 실제 커멘트 처리
-
-        :param command:
-        :return: CommandProcessor.ReturnStatus.UNKNOWN
-        """
-        command = command.replace("\n", "").strip()
-        value = self.__COMMANDS_MULTI.get(command)
-        if value is None:
-            return CommandProcessor.ReturnStatus.UNKNOWN
-
-        return value["do"]()
-
     def bulk_add_commands(self, _dict: dict):
         results = self.__COMMANDS_MULTI.bulk_add(_dict)
         self.__add_decs(results)
@@ -118,6 +105,21 @@ class CommandProcessor(object):
         result = self.__COMMANDS_MULTI.add(key, value)
         self.__add_decs([result])
         return result
+
+    def __process(self, command: str) -> ReturnStatus:
+        """ 실제 커멘트 처리
+
+        :param command:
+        :return: CommandProcessor.ReturnStatus.UNKNOWN
+        """
+        command = command.replace("\n", "").strip()
+        if command == "":
+            return CommandProcessor.ReturnStatus.OK
+        value = self.__COMMANDS_MULTI.get(command)
+        if value is None:
+            return CommandProcessor.ReturnStatus.UNKNOWN
+
+        return value["do"]()
 
     def process(self):
         result = CommandProcessor.ReturnStatus.OK
