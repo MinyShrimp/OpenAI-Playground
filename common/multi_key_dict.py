@@ -25,10 +25,9 @@ class MultiKeyDict:
         if type(key) is not str or type(value) is not dict:
             raise TypeError("Not allowed 'key' or 'value' types.")
 
-        if value.get("supports") is None:
-            raise TypeError("MUST 'supports' key in 'value'. and 'supports' type is str array.")
-
-        if len(set(self.__KEYS.keys()).intersection({key, *value["supports"]})) != 0:
+        mykeys = set(self.__KEYS.keys())
+        newkeys = {key} if value.get("supports") is None else {key, *value["supports"]}
+        if len(mykeys.intersection(newkeys)) != 0:
             raise ValueError("Duplicated key and value['supports'].")
 
         return True
@@ -40,11 +39,11 @@ class MultiKeyDict:
 
         uuid_str = uuid1()
         self.__KEYS[key] = uuid_str
-
-        for sup in value.pop("supports"):
-            self.__KEYS[sup] = uuid_str
-
         self.__VALUE[uuid_str] = value
+
+        if value.get("supports") is not None:
+            for sup in value.pop("supports"):
+                self.__KEYS[sup] = uuid_str
 
     def add(self, key: str, value: dict):
         self.__add(key, value)
