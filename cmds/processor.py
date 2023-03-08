@@ -1,3 +1,4 @@
+import re
 import traceback
 from enum import Enum
 
@@ -74,7 +75,7 @@ class CommandProcessor(object):
 
     @staticmethod
     def __get_help_str(keys: list[str], desc: str):
-        return "- '{}': {}".format("' or '".join(keys), desc)
+        return "- '{}': {}".format("', '".join(keys), desc)
 
     def __add_decs(self, cmds: list[tuple[list[str], dict]]):
         self.__COMMANDS_DECS.append(
@@ -124,18 +125,22 @@ class CommandProcessor(object):
         :param command:
         :return: (_command: str, _params: dict)
         """
+        _command_compile = re.compile("^[a-z]+")
+        _params_complie_1 = re.compile('(-[a-z]+ +("[^"]+" ?)+)')
+        _params_complie_2 = re.compile('"([^"]+)"')
+
         _command, _params = command, None
         if '-' in command:
-            _command, *_params = command.split("-")
-            _command = _command.strip()
+            _command = _command_compile.match(command).group()
+            _tmps = [_tmp[0].strip().replace("-", "") for _tmp in _params_complie_1.findall(command)]
 
-            _tmp = [_p.split(" ") for _p in _params]
             _params = {}
-            for _t in _tmp:
-                _head, *_values = _t
-                _values = "".join(_values).split(",")
+            for _t in _tmps:
+                _head = _t.split(" ")[0]
+                _values = _params_complie_2.findall(_t)
                 _params[_head] = _values
 
+        _command = _command.strip()
         log.debug("cmd: %s, params: %s", _command, _params)
         return _command, _params
 
@@ -166,7 +171,7 @@ class CommandProcessor(object):
         while result is not CommandProcessor.ReturnStatus.QUIT:
             try:
                 print("=======================================")
-                input_data = input("Input Command (To quit, type 'q' or 'quit'): ")
+                input_data = input("Input Command (To help, type 'h' or 'help'): ")
                 print()
 
                 result = self.__process(input_data)

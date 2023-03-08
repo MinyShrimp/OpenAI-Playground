@@ -1,6 +1,7 @@
 import openai
 
 from common import log
+from hello_gpt import ModerationView
 
 '''
 Since: 2023-03-07
@@ -19,7 +20,12 @@ class Moderation:
         """
 
         log.info("Moderation Targets : %s", inputs)
-        return openai.Moderation.create(
+
+        response = openai.Moderation.create(
             model="text-moderation-latest",
             input=inputs
         )
+
+        log.debug("Moderation Response : %s", response)
+        ModerationView.view(inputs, response)
+        return response
