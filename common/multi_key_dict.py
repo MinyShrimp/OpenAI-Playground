@@ -86,9 +86,6 @@ class MultiKeyDict:
     def values(self):
         return self.__VALUE.values()
 
-    def __item(self, keys, value):
-        return ()
-
     def items(self) -> list[tuple[list[str], dict]]:
         """ multi_dict.items()
 

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from common.multi_key_dict import MultiKeyDict
+from common import MultiKeyDict
 
 '''
 Since: 2023-03-08
