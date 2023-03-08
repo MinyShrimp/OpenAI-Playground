@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 
 from common import log
@@ -80,7 +81,7 @@ class CommandProcessor(object):
             *[self.__get_help_str(keys, value["description"]) for keys, value in cmds]
         )
 
-    def __help_do(self) -> ReturnStatus:
+    def __help_do(self, *args, **params) -> ReturnStatus:
         """ "help" Command 처리
 
         :return: CommandProcessor.ReturnStatus.OK
@@ -91,12 +92,11 @@ class CommandProcessor(object):
         return CommandProcessor.ReturnStatus.OK
 
     @staticmethod
-    def __quit_do() -> ReturnStatus:
+    def __quit_do(*args, **params) -> ReturnStatus:
         """ "quit" Command 처리
 
         :return: CommandProcessor.ReturnStatus.QUIT
         """
-        print("Good bye")
         return CommandProcessor.ReturnStatus.QUIT
 
     def bulk_add_commands(self, _dict: dict):
@@ -114,6 +114,31 @@ class CommandProcessor(object):
         self.__add_decs([result])
         return result
 
+    @staticmethod
+    def __cmd_params(command: str) -> tuple[str, dict]:
+        """ `-` 를 기준으로 함수와 파라미터를 분리
+
+        * `$ help -i a, b, c`
+        * => `_command = "help", _params = { 'i': ["a", "b", "c"] }`
+
+        :param command:
+        :return: (_command: str, _params: dict)
+        """
+        _command, _params = command, None
+        if '-' in command:
+            _command, *_params = command.split("-")
+            _command = _command.strip()
+
+            _tmp = [_p.split(" ") for _p in _params]
+            _params = {}
+            for _t in _tmp:
+                _head, *_values = _t
+                _values = "".join(_values).split(",")
+                _params[_head] = _values
+
+        log.debug("cmd: %s, params: %s", _command, _params)
+        return _command, _params
+
     def __process(self, command: str) -> ReturnStatus:
         """ 실제 커멘트 처리
 
@@ -123,23 +148,32 @@ class CommandProcessor(object):
         command = command.replace("\n", "").strip()
         if command == "":
             return CommandProcessor.ReturnStatus.OK
-        value = self.__COMMANDS_MULTI.get(command)
+
+        _command, _params = self.__cmd_params(command)
+
+        value = self.__COMMANDS_MULTI.get(_command)
         if value is None:
             return CommandProcessor.ReturnStatus.UNKNOWN
 
-        return value["do"]()
+        if _params is None:
+            return value["do"]()
+        else:
+            return value["do"](**_params)
 
     def process(self):
         log.info("Hello, Welcome to My Program !!!")
         result = CommandProcessor.ReturnStatus.OK
         while result is not CommandProcessor.ReturnStatus.QUIT:
-            print("=======================================")
-            input_data = input("Input Command (To quit, type 'q' or 'quit'): ")
-            print()
+            try:
+                print("=======================================")
+                input_data = input("Input Command (To quit, type 'q' or 'quit'): ")
+                print()
 
-            result = self.__process(input_data)
-            if result is CommandProcessor.ReturnStatus.UNKNOWN:
-                print("Unvalid Command: '{}'".format(input_data))
-                print("Type 'h' or 'help' to show all commands")
+                result = self.__process(input_data)
+                if result is CommandProcessor.ReturnStatus.UNKNOWN:
+                    print("Unvalid Command: '{}'".format(input_data))
+                    print("Type 'h' or 'help' to show all commands")
+            except Exception:
+                log.warning(traceback.format_exc())
 
         log.info("Program exit")

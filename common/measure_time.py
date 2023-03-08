@@ -21,7 +21,7 @@ measure(hello_function)
 
 # Callable[[type, ...], type]
 # == (type, ...) -> type
-def measure(call_back: Callable[[], any]):
+def measure(call_back: Callable, **kwargs):
     """매개변수로 넘어온 함수의 시간을 측정하는 함수
 
     :raise 매개변수의 타입이 () -> any 함수가 아니면 예외가 발생합니다.
@@ -31,7 +31,7 @@ def measure(call_back: Callable[[], any]):
 
     start = time.time()
     try:
-        result = call_back()
+        result = call_back(**kwargs)
         return result
     except Exception:
         log.warning(traceback.format_exc())
