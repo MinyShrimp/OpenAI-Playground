@@ -12,7 +12,7 @@ class Moderation:
     def call():
         """ 해당 요청에 대한 검증
 
-        :return: 위의 주석 참고
+        :return: docs/OpenAI_Moderation.md 참고
         """
         return openai.Moderation.create(
             model="text-moderation-latest",

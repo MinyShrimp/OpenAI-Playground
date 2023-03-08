@@ -1,8 +1,6 @@
 from typing import TextIO
 
 import openai
-from openai import util
-from openai.api_requestor import APIRequestor
 
 '''
 Since: 2023-03-08
@@ -30,7 +28,8 @@ class Files:
         """
         return openai.File.create(
             purpose=purpose,
-            file=file
+            file=file,
+            user_provided_filename=file.name
         )
 
     @staticmethod
@@ -40,14 +39,8 @@ class Files:
         :param file_id: 업로드된 File ID
         :return: 파일 정보
         """
-        requestor = APIRequestor()
-        response, _, api_key = requestor.request(
-            method="get",
-            url="/files/{}".format(file_id)
-        )
-
-        return util.convert_to_openai_object(
-            response, api_key, None, None
+        return openai.File.retrieve(
+            id=file_id
         )
 
     @staticmethod
