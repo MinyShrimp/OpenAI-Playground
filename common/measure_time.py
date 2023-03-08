@@ -2,6 +2,8 @@ import time
 import traceback
 from typing import Callable
 
+from . import Logger
+
 '''
 Since: 2023-03-07
 Author: 김회민 ksk7584@gmail.com
@@ -27,14 +29,17 @@ def measure(call_back: Callable[[], any]):
     if not isinstance(call_back, Callable):
         raise Exception("매개 변수 'call_back' 은 함수이어야 합니다.")
 
+    log = Logger()
+
     start = time.time()
     try:
         result = call_back()
         return result
     except Exception:
+        log.warning(traceback.format_exc())
         print(traceback.format_exc())
     finally:
         end = time.time()
-        print("[{}] call time: [{}ms]".format(call_back.__name__, (end - start) * 1000))
+        log.info("[{}] call time: [{}ms]".format(call_back.__name__, (end - start) * 1000))
 
     return None

@@ -1,9 +1,12 @@
 from common import CommandProcessor
 from common import EnvLoader
+from common import Logger
 
 
 def init():
     EnvLoader.load()
+    log = Logger()
+    log.info("Hello, Welcome to My Program !!!")
 
 
 def run():
