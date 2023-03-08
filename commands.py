@@ -53,10 +53,7 @@ class CommandProcessor(object):
 
         self.__COMMANDS_MULTI.bulk_add(self.__COMMANDS)
         self.__COMMANDS_DECS = [
-            "- '{}': {}".format(
-                "' or '".join(key),
-                value["description"]
-            ) for key, value in self.__COMMANDS_MULTI.items()
+            self.__get_help_str(keys, value["description"]) for keys, value in self.__COMMANDS_MULTI.items()
         ]
 
     def __new__(cls):
@@ -65,6 +62,15 @@ class CommandProcessor(object):
         if cls.__INSTANCE is None:
             cls.__INSTANCE = super(CommandProcessor, cls).__new__(cls)
         return cls.__INSTANCE
+
+    @staticmethod
+    def __get_help_str(keys: list[str], desc: str):
+        return "- '{}': {}".format("' or '".join(keys), desc)
+
+    def __add_decs(self, cmds: list[tuple[list[str], dict]]):
+        self.__COMMANDS_DECS.append(
+            *[self.__get_help_str(keys, value["description"]) for keys, value in cmds]
+        )
 
     def __help_do(self) -> ReturnStatus:
         """ "help" Command 처리
@@ -97,6 +103,21 @@ class CommandProcessor(object):
             return CommandProcessor.ReturnStatus.UNKNOWN
 
         return value["do"]()
+
+    def bulk_add_commands(self, _dict: dict):
+        results = self.__COMMANDS_MULTI.bulk_add(_dict)
+        self.__add_decs(results)
+        return results
+
+    def add_command(self, key: str, value: dict):
+        """ 커멘드 1 개 추가
+        :param key: commands main key
+        :param value: { "description": str, "supports": list[str], "do": Callable[[], None] }
+        :return: 추가된 커멘드 반환
+        """
+        result = self.__COMMANDS_MULTI.add(key, value)
+        self.__add_decs([result])
+        return result
 
     def process(self):
         result = CommandProcessor.ReturnStatus.OK

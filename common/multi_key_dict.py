@@ -1,3 +1,4 @@
+from typing import Callable
 from uuid import uuid1
 
 '''
@@ -25,14 +26,21 @@ class MultiKeyDict:
         if type(key) is not str or type(value) is not dict:
             raise TypeError("Not allowed 'key' or 'value' types.")
 
+        if not isinstance(value.get("do"), Callable):
+            raise TypeError("No have elements '{ 'do': lambda }' in 'value'")
+
+        if type(value.get("description")) is not str:
+            raise TypeError("No have elements '{ 'description': str }' in 'value'")
+
         mykeys = set(self.__KEYS.keys())
         newkeys = {key} if value.get("supports") is None else {key, *value["supports"]}
+
         if len(mykeys.intersection(newkeys)) != 0:
             raise ValueError("Duplicated key and value['supports'].")
 
         return True
 
-    def __add(self, key: str, value: dict):
+    def __add(self, key: str, value: dict) -> tuple[list[str], dict]:
         """실제 추가를 위한 로직
         """
         self.__check(key, value)
@@ -40,17 +48,20 @@ class MultiKeyDict:
         uuid_str = uuid1()
         self.__KEYS[key] = uuid_str
         self.__VALUE[uuid_str] = value
+        result = ([key], value)
 
         if value.get("supports") is not None:
             for sup in value.pop("supports"):
                 self.__KEYS[sup] = uuid_str
+                result[0].append(sup)
 
-    def add(self, key: str, value: dict):
-        self.__add(key, value)
+        return result
 
-    def bulk_add(self, _dict: dict):
-        for key, value in _dict.items():
-            self.__add(key, value)
+    def add(self, key: str, value: dict) -> tuple[list[str], dict]:
+        return self.__add(key, value)
+
+    def bulk_add(self, _dict: dict) -> list[tuple[list[str], dict]]:
+        return [self.__add(key, value) for key, value in _dict.items()]
 
     def __get(self, key: str):
         if type(key) is not str:
@@ -75,6 +86,9 @@ class MultiKeyDict:
     def values(self):
         return self.__VALUE.values()
 
+    def __item(self, keys, value):
+        return ()
+
     def items(self) -> list[tuple[list[str], dict]]:
         """ multi_dict.items()
 
@@ -87,4 +101,4 @@ class MultiKeyDict:
             else:
                 tmp_dict[value].append(key)
 
-        return [(key, self.__VALUE[value]) for value, key in tmp_dict.items()]
+        return [(keys, self.__VALUE[value]) for value, keys in tmp_dict.items()]
