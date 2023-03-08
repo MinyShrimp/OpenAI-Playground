@@ -3,6 +3,8 @@ import os
 import dotenv
 import openai
 
+from . import Logger
+
 '''
 Since: 2023-03-07
 Author: 김회민 ksk7584@gmail.com
@@ -33,9 +35,13 @@ class EnvLoader:
 
         :raise 환경 설정에서 OPENAI_API_KEY 가 없다면 예외가 발생됩니다.
         """
+        log = Logger()
+
         if cls.__load_env() is False:
             dotenv.load_dotenv()
             if cls.__load_env() is False:
+                log.error("Not Found OPENAI_API_KEY")
                 raise Exception("OPENAI_API_KEY 의 설정을 확인할 수 없습니다.")
 
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        log.debug("OPENAI_API_KEY: [%s]", openai.api_key)

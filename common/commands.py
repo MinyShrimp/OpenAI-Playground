@@ -1,6 +1,7 @@
 from enum import Enum
 
 from . import MultiKeyDict
+from . import Logger
 
 '''
 Since: 2023-03-08
@@ -132,3 +133,5 @@ class CommandProcessor(object):
             if result is CommandProcessor.ReturnStatus.UNKNOWN:
                 print("Unvalid Command: '{}'".format(input_data))
                 print("Type 'h' or 'help' to show all commands")
+
+        Logger().info("Program exit")
