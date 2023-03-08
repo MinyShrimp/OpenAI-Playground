@@ -37,6 +37,6 @@ def measure(call_back: Callable[[], any]):
         log.warning(traceback.format_exc())
     finally:
         end = time.time()
-        log.info("[{}] call time: [{}ms]".format(call_back.__name__, (end - start) * 1000))
+        log.info("call time: [{}ms]".format((end - start) * 1000))
 
     return None

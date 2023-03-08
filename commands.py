@@ -49,19 +49,26 @@ class CommandProcessor(object):
     def __init__(self):
         """ 초기 설정
         """
-        self.__COMMANDS["h"]["do"] = self.__help_do
-        self.__COMMANDS["q"]["do"] = self.__quit_do
+        cls = type(self)
+        if not hasattr(cls, "_init"):
+            cls._init = True
 
-        self.__COMMANDS_MULTI.bulk_add(self.__COMMANDS)
-        self.__COMMANDS_DECS = [
-            self.__get_help_str(keys, value["description"]) for keys, value in self.__COMMANDS_MULTI.items()
-        ]
+            self.__COMMANDS["h"]["do"] = self.__help_do
+            self.__COMMANDS["q"]["do"] = self.__quit_do
+
+            self.__COMMANDS_MULTI.bulk_add(self.__COMMANDS)
+            self.__COMMANDS_DECS = [
+                self.__get_help_str(keys, value["description"]) for keys, value in self.__COMMANDS_MULTI.items()
+            ]
+
+            log.debug("Finished Initalizing %s", cls.__INSTANCE)
 
     def __new__(cls):
         """ 싱글톤 패턴 처리
         """
         if cls.__INSTANCE is None:
             cls.__INSTANCE = super(CommandProcessor, cls).__new__(cls)
+            log.debug("Created new instance %s", cls.__INSTANCE)
         return cls.__INSTANCE
 
     @staticmethod

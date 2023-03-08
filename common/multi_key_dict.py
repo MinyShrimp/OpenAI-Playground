@@ -1,4 +1,3 @@
-from typing import Callable
 from uuid import uuid1
 
 '''
@@ -25,12 +24,6 @@ class MultiKeyDict:
         """
         if type(key) is not str or type(value) is not dict:
             raise TypeError("Not allowed 'key' or 'value' types.")
-
-        if not isinstance(value.get("do"), Callable):
-            raise TypeError("No have elements '{ 'do': lambda }' in 'value'")
-
-        if type(value.get("description")) is not str:
-            raise TypeError("No have elements '{ 'description': str }' in 'value'")
 
         mykeys = set(self.__KEYS.keys())
         newkeys = {key} if value.get("supports") is None else {key, *value["supports"]}
