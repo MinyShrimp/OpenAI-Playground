@@ -12,7 +12,7 @@ pip freeze > requirements.txt
 
 ## File
 
-### [설명](https://github.com/MinyShrimp/OpenAI-Playground/blob/main/docs/OpenAI_FineTuning.md), [코드](files.py)
+### [설명](https://github.com/MinyShrimp/OpenAI-Playground/blob/main/docs/OpenAI_FineTuning_API.md), [코드](files.py)
 
 ## Fine-Tuning
 

@@ -4,16 +4,6 @@
 
 공식 문서를 참고하여 번역을 진행 중입니다. 파파고 만만세.
 
-### [OpenAI 소개 및 모델의 정보와 가격](docs/OpenAI_소개.md)
-
-### [OpenAI - 사용법](docs/OpenAI_사용_기초.md)
-
-### [OpenAI - 기능 - Moderation](docs/OpenAI_Moderation.md)
-
-### [OpenAI - 기능 - FineTuning](docs/OpenAI_FineTuning.md)
-
-### [OpenAI - 기능 - Classfication](docs/OpenAI_Classification.md)
-
 ## 프로젝트 설치
 
 * Python 설치 - [Homepage](https://www.python.org/)

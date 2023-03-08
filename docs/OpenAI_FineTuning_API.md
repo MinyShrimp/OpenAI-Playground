@@ -4,6 +4,8 @@
 
 그 외에도 python 의 openai 라이브러리를 사용하는 방법과 그에 따른 결과물도 소개합니다.
 
+만약 Fine-Tuning 에 대한 자세한 설명을 원한다면 [Fine-Tuning 소개](OpenAI_FineTuning.md) 를 확인해주세요.
+
 ## Files
 
 > [Files Document](https://platform.openai.com/docs/api-reference/files)

@@ -5,6 +5,7 @@
 > 사전 학습 데이터를 기준으로 새로운 프롬프트의 값을 추출하는 기법 - [미세 조정 가이드](https://platform.openai.com/docs/guides/fine-tuning)
 
 OpenAPI 가 제공하는 API 대신 GPT-3 을 사용하여 자신의 어플리케이션에 맞게 모델을 미세 조정하는 기능입니다.
+
 GTP-3.5 출시 이전에 사용되던 GPT-3 을 사용하기 때문에 사전에 개방형 인터넷에서 훈련된 모델에
 사용자가 원하는 데이터를 입력하여 자신의 어플리케이션에 특화된 데이터를 얻어낼 수 있게 됩니다.
 
@@ -35,9 +36,9 @@ GTP-3.5 출시 이전에 사용되던 GPT-3 을 사용하기 때문에 사전에
 
 ## 훈련 데이터 준비
 
-> 훈련 데이터 준비를 위해선 아래의 조건을 만족해야합니다.
+> 훈련 데이터 준비를 위해선 아래의 조건을 만족해야합니다.<br>
 > 아래의 글은 간략한 안내만을 진행하기 때문에 더 자세한
-> 내용은 [공식 Documentation](https://platform.openai.com/docs/guides/fine-tuning/preparing-your-dataset) 을 참고해주세요.
+> 내용은 [공식 Documentation](https://platform.openai.com/docs/guides/fine-tuning/preparing-your-dataset) 을 참고해주세요.<br>
 > 공식 Documentation 에서는 기본적인 조건
 > 외에도 [여러 상황에 대한 적절한 솔루션](https://platform.openai.com/docs/guides/fine-tuning/advanced-usage)을 제공합니다.
 
@@ -79,6 +80,7 @@ $ openai tools fine_tunes.prepare_data -f <LOCAL_FILE>
 > 만약 API 를 이용한 방법을 알고 싶다면 [OpenAI_FineTuning_API.md](OpenAI_FineTuning_API.md) 를 참고해주세요.
 
 위의 조건을 만족한 JSONL 파일이 준비되면 해당 파일을 OpenAI 서버에 업로드를 해야합니다.
+
 업로드를 하는 방법은 CLI 도구를 사용하는 방법과 Files API 를 사용하는 방법이 있습니다.
 
 ### CLI 업로드 도구
@@ -105,12 +107,12 @@ $ openai api fine_tunes.create -t <TRAIN_FILE_ID_OR_PATH> -m <BASE_MODEL>
 $ openai api fine_tunes.follow -i <YOUR_FINE_TUNE_JOB_ID>
 ```
 
-만약, 위의 업로드를 진행하다가 여러 이유 (인터넷 접속 불안정, 클라이언트 접속 종료) 로 인해 작업이 중단되면
-위의 명령을 실행하여 다시 작업을 이어서 진행할 수 있습니다.
-
 | Parameters                | 설명                    |
 |---------------------------|-----------------------|
 | `<YOUR_FINE_TUNE_JOB_ID>` | 작업을 진행 중인 ID 를 입력합니다. |
+
+만약, 위의 업로드를 진행하다가 여러 이유 (인터넷 접속 불안정, 클라이언트 접속 종료) 로 인해 작업이 중단되면
+위의 명령을 실행하여 다시 작업을 이어서 진행할 수 있습니다.
 
 ### 현재 진행 상황 확인
 
@@ -138,7 +140,7 @@ $ openai api fine_tunes.cancel -i <YOUR_FINE_TUNE_JOB_ID>
 
 ## Fine Tuning 모델 사용
 
-> **Completion Endpoint** 를 사용하기 때문에 Completion 이 지원하는 모든 파라미터를 사용할 수 있습니다.
+> **Completion Endpoint** 를 사용하기 때문에 Completion 이 지원하는 모든 파라미터를 사용할 수 있습니다.<br>
 > 이에 대한 자세한 내용은 [공식 Documentation](https://platform.openai.com/docs/api-reference/completions) 에서 확인해주세요.
 
 ### CLI
@@ -152,7 +154,7 @@ $ openai api completions.create -m <FINE_TUNED_MODEL> -p <YOUR_PROMPT>
 | `<FINE_TUNED_MODEL>` | `fine_tunes.create` 로 생성한 모델 |
 | `<YOUR_PROMPT>`      | 답변을 원하는 자연어 요청               |
 
-### curl
+### HTTP API
 
 ```shell
 curl https://api.openai.com/v1/completions \
@@ -197,7 +199,7 @@ $ openai api models.delete -i <FINE_TUNED_MODEL>
 |----------------------|------------------------------|
 | `<FINE_TUNED_MODEL>` | `fine_tunes.create` 로 생성한 모델 |
 
-### curl
+### HTTP API
 
 ```shell
 curl https://api.openai.com/v1/models/<FINE_TUNED_MODEL> \
