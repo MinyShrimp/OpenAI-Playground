@@ -3,7 +3,7 @@ import os
 import dotenv
 import openai
 
-from . import Logger
+from . import log
 
 '''
 Since: 2023-03-07
@@ -35,8 +35,6 @@ class EnvLoader:
 
         :raise 환경 설정에서 OPENAI_API_KEY 가 없다면 예외가 발생됩니다.
         """
-        log = Logger()
-
         if cls.__load_env() is False:
             dotenv.load_dotenv()
             if cls.__load_env() is False:

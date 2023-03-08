@@ -1,7 +1,7 @@
 from enum import Enum
 
-from . import MultiKeyDict
-from . import Logger
+from common import log
+from common import MultiKeyDict
 
 '''
 Since: 2023-03-08
@@ -123,6 +123,7 @@ class CommandProcessor(object):
         return value["do"]()
 
     def process(self):
+        log.info("Hello, Welcome to My Program !!!")
         result = CommandProcessor.ReturnStatus.OK
         while result is not CommandProcessor.ReturnStatus.QUIT:
             print("=======================================")
@@ -134,4 +135,4 @@ class CommandProcessor(object):
                 print("Unvalid Command: '{}'".format(input_data))
                 print("Type 'h' or 'help' to show all commands")
 
-        Logger().info("Program exit")
+        log.info("Program exit")

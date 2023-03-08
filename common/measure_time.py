@@ -2,7 +2,7 @@ import time
 import traceback
 from typing import Callable
 
-from . import Logger
+from . import log
 
 '''
 Since: 2023-03-07
@@ -28,8 +28,6 @@ def measure(call_back: Callable[[], any]):
     """
     if not isinstance(call_back, Callable):
         raise Exception("매개 변수 'call_back' 은 함수이어야 합니다.")
-
-    log = Logger()
 
     start = time.time()
     try:

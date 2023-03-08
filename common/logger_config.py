@@ -25,3 +25,6 @@ class Logger(logging.Logger):
         if cls.__INSTANCE is None:
             cls.__INSTANCE = super(logging.Logger, cls).__new__(cls)
         return cls.__INSTANCE
+
+
+log = Logger()
