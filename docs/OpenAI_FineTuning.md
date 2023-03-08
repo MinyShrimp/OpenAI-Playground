@@ -35,6 +35,12 @@ GTP-3.5 출시 이전에 사용되던 GPT-3 을 사용하기 때문에 사전에
 
 ## 훈련 데이터 준비
 
+> 훈련 데이터 준비를 위해선 아래의 조건을 만족해야합니다.
+> 아래의 글은 간략한 안내만을 진행하기 때문에 더 자세한
+> 내용은 [공식 Documentation](https://platform.openai.com/docs/guides/fine-tuning/preparing-your-dataset) 을 참고해주세요.
+> 공식 Documentation 에서는 기본적인 조건
+> 외에도 [여러 상황에 대한 적절한 솔루션](https://platform.openai.com/docs/guides/fine-tuning/advanced-usage)을 제공합니다.
+
 ### 필수 조건
 
 Fine Tuning 에 사용되는 데이터는 아래의 조건을 만족해야 합니다.
@@ -59,239 +65,154 @@ Fine Tuning 에 사용되는 데이터는 아래의 조건을 만족해야 합�
 $ openai tools fine_tunes.prepare_data -f <LOCAL_FILE>
 ```
 
-## Files
+| Parameters     | 설명                                      |
+|----------------|-----------------------------------------|
+| `<LOCAL_FILE>` | CSV, TSV, XLSX, JSON, JSONL 형식의 Raw 데이터 |
 
-> [Files Document](https://platform.openai.com/docs/api-reference/files)
+* python 을 통해 openai 를 설치하게 되면 위와 같이 CLI 환경에서 실행할 수 있는 도구를 제공합니다.
+* **CSV, TSV, XLSX, JSON, JSONL** 확장자를 지원하며, 결과물은 `<FILENAME>_train.jsonl`과 `<FILENAME>_valid.jsonl` 의 형태로 제공됩니다.
+* 위 도구를 실행하면 위에서 말한 필수 조건과 만족하면 좋은 조건이 모두 적용되어 파일이 생성됩니다.
 
-Files 는 Fine Tuning 에 사용할 파일을 업로드하는데 사용됩니다.
+## 훈련 데이터 업로드
 
-### 업로드된 파일 얻기
+> 해당 문서에서는 CLI 도구를 이용한 방법만 소개됩니다.<br>
+> 만약 API 를 이용한 방법을 알고 싶다면 [OpenAI_FineTuning_API.md](OpenAI_FineTuning_API.md) 를 참고해주세요.
 
-#### HTTP API
+위의 조건을 만족한 JSONL 파일이 준비되면 해당 파일을 OpenAI 서버에 업로드를 해야합니다.
+업로드를 하는 방법은 CLI 도구를 사용하는 방법과 Files API 를 사용하는 방법이 있습니다.
 
-```shell
-curl https://api.openai.com/v1/files \
-  -X GET \
-  -H 'Authorization: Bearer OPENAI_API_KEY'
-```
-
-#### Python
-
-```Python
-import os
-import openai
-
-ai_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-openai.File.list()
-```
-
-#### 결과
-
-```json
-{
-    "data": [
-        {
-            "bytes": 60800,
-            "created_at": 1678202345,
-            "filename": "data/data_train.jsonl",
-            "id": "file-XXXXX",
-            "object": "file",
-            "purpose": "fine-tune",
-            "status": "processed",
-            "status_details": null
-        }
-    ],
-    "object": "list"
-}
-```
-
-### 파일 업로드
-
-#### HTTP API
+### CLI 업로드 도구
 
 ```shell
-curl https://api.openai.com/v1/files \
-  -X POST \
-  -H "Authorization: Bearer OPENAI_API_KEY" \
-  -F purpose="fine-tune" \
-  -F file='@mydata.jsonl'
+$ openai api fine_tunes.create -t <TRAIN_FILE_ID_OR_PATH> -m <BASE_MODEL>
 ```
 
-#### Python
+| Parameters                | 설명                                                      |
+|---------------------------|---------------------------------------------------------|
+| `<TRAIN_FILE_ID_OR_PATH>` | `<FILENAME>_train.jsonl` 파일의 경로를 입력합니다.                 |
+| `<BASE_MODEL>`            | ada, babbage, curie, davinci 의 모델 중 원하는 모델을 선택해서 입력합니다. |
 
-```Python
-import os
-import openai
+위의 명령을 실행하면 여러 작업이 수행됩니다.
 
-from typing import TextIO
+1. File API 를 사용하여 파일 업로드
+2. Fine-Tuning 생성
+3. 작업이 완료될 때 까지 이벤트를 스트리밍합니다.
+    * 종종 몇 분 정도 걸리지만 대기열에 작업이 많거나 데이터 세트가 큰 경우 몇 시간이 걸릴 수 있습니다.
 
-ai_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-openai.File.create(
-    purpose=purpose,
-    file=open("data/prepared_train.jsonl")
-)
-```
-
-| Key       | 뜻                  | 필수     | 설명                                       |
-|-----------|--------------------|--------|------------------------------------------|
-| `purpose` | 업로드의 목적            | `true` | Fine Tuning 이 목적이면 `fine-tune` 을 입력합니다.  |
-| `file`    | 업로드할 JSON Lines 파일 | `true` | `prompt`, `completion` field 를 포함해야 합니다. |
-
-#### Response
-
-```json
-{
-    "bytes": 60800,
-    "created_at": 1678207868,
-    "filename": "file",
-    "id": "file-XXX",
-    "object": "file",
-    "purpose": "fine-tune",
-    "status": "uploaded",
-    "status_details": null
-}
-```
-
-### 파일 삭제
-
-#### HTTP API
+### 이어서 재 업로드
 
 ```shell
-curl https://api.openai.com/v1/files/{file_id} \
-  -X DELETE \
-  -H 'Authorization: Bearer OPENAI_API_KEY'
+$ openai api fine_tunes.follow -i <YOUR_FINE_TUNE_JOB_ID>
 ```
 
-#### Python
+만약, 위의 업로드를 진행하다가 여러 이유 (인터넷 접속 불안정, 클라이언트 접속 종료) 로 인해 작업이 중단되면
+위의 명령을 실행하여 다시 작업을 이어서 진행할 수 있습니다.
 
-```Python
-import os
-import openai
+| Parameters                | 설명                    |
+|---------------------------|-----------------------|
+| `<YOUR_FINE_TUNE_JOB_ID>` | 작업을 진행 중인 ID 를 입력합니다. |
 
-ai_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-openai.File.download(
-    id=file_id
-)
-```
-
-| Query String | 뜻          | 필수     | 설명                      |
-|--------------|------------|--------|-------------------------|
-| `{file_id}`  | 업로드된 파일 ID | `true` | 삭제할 파일 ID 를 포함하여 요청합니다. |
-
-#### Response
-
-```json
-{
-    "deleted": true,
-    "id": "file-XXXXX",
-    "object": "file"
-}
-```
-
-### 파일 검색
-
-#### HTTP API
+### 현재 진행 상황 확인
 
 ```shell
-curl https://api.openai.com/v1/files/{file_id} \
-  -X GET \
-  -H 'Authorization: Bearer OPENAI_API_KEY'
+# List all created Fine-Tunes
+$ openai api fine_tunes.list
+
+# Retrieve the state of Fine-Tune.
+# job status: pending, running, succeeded, failed
+$ openai api fine_tunes.get -i <YOUR_FINE_TUNE_JOB_ID>
+
+# Cancel a job
+$ openai api fine_tunes.cancel -i <YOUR_FINE_TUNE_JOB_ID>
 ```
 
-#### Python
+| CLI                 | 설명                                                          |
+|---------------------|-------------------------------------------------------------|
+| `fine_tunes.list`   | 생성된 모든 Fine Tunes 목록을 가져옵니다.                                |
+| `fine_tunes.get`    | `<YOUR_FINE_TUNE_JOB_ID>` 을 이용하여 원하는 단일 Fine Tunes 를 가져옵니다. |
+| `fine_tunes.cancel` | `fine_tunes.create` 의 진행을 취소합니다.                            |
 
-```python
-import os
-import openai
-from openai import util
-from openai.api_requestor import APIRequestor
+| Job Status | pending | running | succeeded | failed |
+|------------|---------|---------|-----------|--------|
+| 설명         | 일시 정지   | 진행 중    | 완료        | 실패     |
 
-ai_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+## Fine Tuning 모델 사용
 
-requestor = APIRequestor()
-response, _, api_key = requestor.request(
-    method="get",
-    url="/files/{}".format(file_id)
-)
+> **Completion Endpoint** 를 사용하기 때문에 Completion 이 지원하는 모든 파라미터를 사용할 수 있습니다.
+> 이에 대한 자세한 내용은 [공식 Documentation](https://platform.openai.com/docs/api-reference/completions) 에서 확인해주세요.
 
-util.convert_to_openai_object(
-    response, api_key, None, None
-)
-```
-
-| Query String | 뜻          | 필수     | 설명                   |
-|--------------|------------|--------|----------------------|
-| `{file_id}`  | 업로드된 파일 ID | `true` | 특정 파일에 대한 정보를 반환합니다. |
-
-#### Response
-
-```json
-{
-    "bytes": 60800,
-    "created_at": 1678207868,
-    "filename": "file",
-    "id": "file-XXXXX",
-    "object": "file",
-    "purpose": "fine-tune",
-    "status": "processed",
-    "status_details": null
-}
-```
-
-### 파일 내용 검색
-
-#### HTTP API
+### CLI
 
 ```shell
-curl https://api.openai.com/v1/files/{file_id}/content \
-  -X GET \
-  -H 'Authorization: Bearer OPENAI_API_KEY' \
-  > file.jsonl
+$ openai api completions.create -m <FINE_TUNED_MODEL> -p <YOUR_PROMPT>
 ```
 
-#### Python
+| Parameters           | 설명                           |
+|----------------------|------------------------------|
+| `<FINE_TUNED_MODEL>` | `fine_tunes.create` 로 생성한 모델 |
+| `<YOUR_PROMPT>`      | 답변을 원하는 자연어 요청               |
 
-```Python
-import os
-import openai
-
-ai_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-openai.File.download(
-    id=file_id
-)
-```
-
-| Query String | 뜻          | 필수     | 설명                |
-|--------------|------------|--------|-------------------|
-| `{file_id}`  | 업로드된 파일 ID | `true` | 특정 파일의 내용을 반환합니다. |
-
-#### Response
-
-* `openai.error.InvalidRequestError`: 무료 계정은 다운로드가 불가능합니다.
-
-## Fine Tuning
-
-### HTTP API
+### curl
 
 ```shell
-curl https://api.openai.com/v1/fine-tunes \
-  -X POST \
+curl https://api.openai.com/v1/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer OPENAI_API_KEY" \
-  -d '{"training_file": "{file_id}"}'
+  -d '{"prompt": "YOUR_PROMPT", "model": "FINE_TUNED_MODEL"}'
 ```
 
 ### Python
 
-```Python
+```python
+import os
+import openai
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.Completion.create(
+    model="FINE_TUNED_MODEL",
+    prompt="YOUR_PROMPT"
+)
+```
+
+### NodeJS
+
+```javascript
+await openai.createCompletion({
+    model: "FINE_TUNED_MODEL"
+    prompt: "YOUR_PROMPT",
+});
+```
+
+## Fine Tuning 모델 삭제
+
+> 해당 모델을 삭제하기 위해서는 해당 모델의 Owner 로 지정되어야 합니다.
+
+### CLI
+
+```shell
+$ openai api models.delete -i <FINE_TUNED_MODEL>
+```
+
+| Parameters           | 설명                           |
+|----------------------|------------------------------|
+| `<FINE_TUNED_MODEL>` | `fine_tunes.create` 로 생성한 모델 |
+
+### curl
+
+```shell
+curl https://api.openai.com/v1/models/<FINE_TUNED_MODEL> \
+  -X "DELETE" \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+### Python
+
+```python
+import os
+import openai
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.Model.delete(
+    model="FINE_TUNED_MODEL"
+)
 ```

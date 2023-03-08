@@ -26,9 +26,7 @@ curl https://api.openai.com/v1/files \
 import os
 import openai
 
-ai_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 openai.File.list()
 ```
 
@@ -70,11 +68,7 @@ curl https://api.openai.com/v1/files \
 import os
 import openai
 
-from typing import TextIO
-
-ai_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 openai.File.create(
     purpose=purpose,
     file=open("data/prepared_train.jsonl")
@@ -117,9 +111,7 @@ curl https://api.openai.com/v1/files/{file_id} \
 import os
 import openai
 
-ai_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 openai.File.download(
     id=file_id
 )
@@ -157,9 +149,7 @@ import openai
 from openai import util
 from openai.api_requestor import APIRequestor
 
-ai_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 requestor = APIRequestor()
 response, _, api_key = requestor.request(
     method="get",
@@ -207,9 +197,7 @@ curl https://api.openai.com/v1/files/{file_id}/content \
 import os
 import openai
 
-ai_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 openai.File.download(
     id=file_id
 )

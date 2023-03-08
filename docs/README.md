@@ -25,8 +25,12 @@
 
 * 소개
 * 훈련 데이터 준비
-* API 사용법
-    * File
-    * Fine Tuning
+* 훈련 데이터 업로드
+* Fine-Tuning 모델 사용
+
+## [FineTuning APIs](OpenAI_FineTuning_API.md)
+
+* File
+* Fine Tuning
 
 ## [Classfication - 분류](OpenAI_Classification.md)
