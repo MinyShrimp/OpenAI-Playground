@@ -20,6 +20,8 @@ class MultiKeyDict:
         self.__KEYS.clear()
 
     def __check(self, key: str, value: dict):
+        """ 타입 체크
+        """
         if type(key) is not str or type(value) is not dict:
             raise TypeError("Not allowed 'key' or 'value' types.")
 
@@ -32,6 +34,8 @@ class MultiKeyDict:
         return True
 
     def __add(self, key: str, value: dict):
+        """실제 추가를 위한 로직
+        """
         self.__check(key, value)
 
         uuid_str = uuid1()
@@ -57,9 +61,13 @@ class MultiKeyDict:
         return self.__VALUE[self.__KEYS[key]]
 
     def get(self, key: str):
+        """ multi_dict.get("key")
+        """
         return self.__get(key)
 
     def __getitem__(self, item: str):
+        """ multi_dict["key"]
+        """
         return self.__get(item)
 
     def keys(self):
@@ -68,7 +76,11 @@ class MultiKeyDict:
     def values(self):
         return self.__VALUE.values()
 
-    def items(self):
+    def items(self) -> list[tuple[list[str], dict]]:
+        """ multi_dict.items()
+
+        :return: [ [[K1, K2], V1], [[K3, K4], V2], ... ]
+        """
         tmp_dict = {}
         for key, value in self.__KEYS.items():
             if tmp_dict.get(value) is None:

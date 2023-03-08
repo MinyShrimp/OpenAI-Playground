@@ -14,6 +14,8 @@ class CommandProcessor(object):
     Singleton 패턴 적용: CommandProcessor()
     """
     __INSTANCE = None
+
+    # 커멘드 초기 설정 템플릿
     __COMMANDS = {
         "h": {
             "description": "show all commands",
@@ -24,16 +26,28 @@ class CommandProcessor(object):
             "supports": ["quit"],
         }
     }
+
+    # 커멘드를 실제로 관리하기 위한 멀티 키 딕셔너리
     __COMMANDS_MULTI = MultiKeyDict()
+
+    # help 커멘드 출력을 위한 리스트
     __COMMANDS_DECS = []
 
     @staticmethod
     class ReturnStatus(Enum):
+        """ 프로세스 로직 흐름 처리를 위한 Enum
+
+        * OK:      정상 처리
+        * QUIT:    프로그램 종료
+        * UNKNOWN: 등록되지 않은 커멘드
+        """
         OK = 1
         QUIT = -1
         UNKNOWN = 0
 
     def __init__(self):
+        """ 초기 설정
+        """
         self.__COMMANDS["h"]["do"] = self.__help_do
         self.__COMMANDS["q"]["do"] = self.__quit_do
 
@@ -46,11 +60,17 @@ class CommandProcessor(object):
         ]
 
     def __new__(cls):
+        """ 싱글톤 패턴 처리
+        """
         if cls.__INSTANCE is None:
             cls.__INSTANCE = super(CommandProcessor, cls).__new__(cls)
         return cls.__INSTANCE
 
     def __help_do(self) -> ReturnStatus:
+        """ "help" Command 처리
+
+        :return: CommandProcessor.ReturnStatus.OK
+        """
         print("commands list")
         for desc in self.__COMMANDS_DECS:
             print(desc)
@@ -58,10 +78,19 @@ class CommandProcessor(object):
 
     @staticmethod
     def __quit_do() -> ReturnStatus:
+        """ "quit" Command 처리
+
+        :return: CommandProcessor.ReturnStatus.QUIT
+        """
         print("Good bye")
         return CommandProcessor.ReturnStatus.QUIT
 
     def __process(self, command: str) -> ReturnStatus:
+        """ 실제 커멘트 처리
+
+        :param command:
+        :return: CommandProcessor.ReturnStatus.UNKNOWN
+        """
         command = command.replace("\n", "").strip()
         value = self.__COMMANDS_MULTI.get(command)
         if value is None:
@@ -71,7 +100,6 @@ class CommandProcessor(object):
 
     def process(self):
         result = CommandProcessor.ReturnStatus.OK
-
         while result is not CommandProcessor.ReturnStatus.QUIT:
             print("=======================================")
             input_data = input("Input Command (To quit, type 'q' or 'quit'): ")
