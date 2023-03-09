@@ -12,7 +12,7 @@ Author: 김회민 ksk7584@gmail.com
 class Moderation:
 
     @staticmethod
-    def call(inputs: list[str]):
+    def call(inputs: list):
         """ 해당 요청에 대한 검증
 
         :param inputs: 검증을 원하는 데이터
