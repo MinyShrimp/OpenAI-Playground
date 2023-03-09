@@ -125,14 +125,14 @@ class CommandProcessor(object):
         :param command:
         :return: (_command: str, _params: dict)
         """
-        _command_compile = re.compile("^[a-z]+")
-        _params_complie_1 = re.compile('(-[a-z]+ +("[^"]+" ?)+)')
+        _command_compile = re.compile("^[a-z ]+")
+        _params_complie_1 = re.compile('(-[a-z_]+ +("[^"]+" ?)+)')
         _params_complie_2 = re.compile('"([^"]+)"')
 
         _command, _params = command, None
         if '-' in command:
             _command = _command_compile.match(command).group()
-            _tmps = [_tmp[0].strip().replace("-", "") for _tmp in _params_complie_1.findall(command)]
+            _tmps = [_tmp[0].strip()[1:] for _tmp in _params_complie_1.findall(command)]
 
             _params = {}
             for _t in _tmps:

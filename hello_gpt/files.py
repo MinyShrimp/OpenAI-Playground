@@ -40,8 +40,12 @@ class Files:
         :param file_id: 업로드된 File ID
         :return: 파일 정보
         """
+        _file_id = file_id
+        if type(_file_id) == list:
+            _file_id = file_id[0]
+
         return openai.File.retrieve(
-            id=file_id
+            id=_file_id
         )
 
     @staticmethod
