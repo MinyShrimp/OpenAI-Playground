@@ -1,5 +1,4 @@
-from cmds import CommandProcessor
-from cmds import ProxyFactory
+from cmds import CommandUtils
 
 from hello_gpt import Moderation
 from hello_gpt import Files
@@ -15,15 +14,17 @@ class GptConfig:
     @staticmethod
     def config():
         # Moderation
-        CommandProcessor().add_command("m", {
-            "description": "Moderation Prompt",
-            "supports": ["mo", "moderation"],
-            "do": ProxyFactory(Moderation.call),
-        })
+        CommandUtils.add_helper(
+            key="m",
+            description="Moderation Prompt",
+            supports=["mo", "moderation"],
+            do=Moderation.call
+        )
 
         # File
-        CommandProcessor().add_command("file list", {
-            "description": "Get File List",
-            "supports": ["fl"],
-            "do": ProxyFactory(Files.get_file_list),
-        })
+        CommandUtils.add_helper(
+            key="fl",
+            description="Get File List",
+            supports=["file list"],
+            do=Files.get_file_list
+        )

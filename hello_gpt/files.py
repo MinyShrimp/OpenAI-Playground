@@ -1,5 +1,3 @@
-from typing import TextIO
-
 import openai
 
 '''
@@ -19,17 +17,20 @@ class Files:
         return openai.File.list()["data"]
 
     @staticmethod
-    def upload_file(file: TextIO, purpose: str = "fine-tune"):
+    def upload_file(
+            file_name: str,
+            purpose: str = "fine-tune"
+    ):
         """ 파일 업로드
 
-        :param file: open("file_path")
+        :param file_name: 파일 이름
         :param purpose: "fine-tune"
         :return: 파일 정보
         """
         return openai.File.create(
             purpose=purpose,
-            file=file,
-            user_provided_filename=file.name
+            file=open(file_name),
+            user_provided_filename=file_name
         )
 
     @staticmethod
