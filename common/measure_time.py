@@ -27,7 +27,7 @@ def measure(call_back, **kwargs):
     :raise 매개변수의 타입이 () -> any 함수가 아니면 예외가 발생합니다.
     """
     if not isinstance(call_back, Callable):
-        raise Exception("매개 변수 'call_back' 은 함수이어야 합니다.")
+        raise TypeError(f"Not Allowed Type 'call_back'. ok: <function>, your: {type(call_back)}")
 
     start = time.time()
     try:
@@ -37,6 +37,6 @@ def measure(call_back, **kwargs):
         log.warning(traceback.format_exc())
     finally:
         end = time.time()
-        log.info("call time: [{}ms]".format((end - start) * 1000))
+        log.info("[%s.%s] call time: [%.02fms]", call_back.__module__, call_back.__name__, (end - start) * 1000)
 
     return None
