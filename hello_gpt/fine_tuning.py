@@ -1,5 +1,8 @@
-import openai
+from os import system
+import subprocess
 from requests.exceptions import ChunkedEncodingError
+
+import openai
 
 from common import log
 from cmds import CommandUtils
@@ -12,6 +15,17 @@ Author: 김회민 ksk7584@gmail.com
 
 
 class FineTuning:
+
+    @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["pd", "prepare create"],
+        description="Create Fine-Tune Prepare data"
+    )
+    def create_prepare_file(
+            file_name: str
+    ):
+        _cmd = f"openai tools fine_tunes.prepare_data -f {file_name}"
+        return subprocess.run(_cmd.split(' '))
 
     @staticmethod
     @CommandUtils.add_decorator(
