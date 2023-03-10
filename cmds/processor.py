@@ -142,7 +142,7 @@ class CommandProcessor(object):
         log.debug("cmd: %s, params: %s", _command, _params)
         return _command, _params
 
-    def __process(self, command: str) -> ReturnStatus:
+    def __cmd_process(self, command: str) -> ReturnStatus:
         """ 실제 커멘트 처리
 
         :param command:
@@ -167,7 +167,7 @@ class CommandProcessor(object):
     def __input_data():
         input_data = ""
         while input_data == "":
-            input_data = input("Input Command (To help, type 'h' or 'help'): ")
+            input_data = input(f"Input Command (To help, type 'h' or 'help'): ")
         return input_data
 
     def process(self):
@@ -179,11 +179,10 @@ class CommandProcessor(object):
                 input_data = self.__input_data()
                 print()
 
-                result = self.__process(input_data)
+                result = self.__cmd_process(input_data)
                 if result is CommandProcessor.ReturnStatus.UNKNOWN:
-                    print("Unvalid Command: '{}'".format(input_data))
+                    print(f"Unvalid Command: '{input_data}'")
                     print("Type 'h' or 'help' to show all commands")
             except Exception:
                 log.warning(traceback.format_exc())
-
         log.info("Program exit")

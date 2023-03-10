@@ -1,6 +1,6 @@
 import openai
 
-from common import log
+from cmds import CommandUtils
 from hello_gpt import ModerationView
 
 '''
@@ -12,6 +12,10 @@ Author: 김회민 ksk7584@gmail.com
 class Moderation:
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["m", "mo", "moderation"],
+        description="Moderation Prompt - Option: '-inputs \"Hello World\"'"
+    )
     def call(inputs: list):
         """ 해당 요청에 대한 검증
 
@@ -19,13 +23,10 @@ class Moderation:
         :return: docs/OpenAI_Moderation.md 참고
         """
 
-        log.info("Moderation Targets : %s", inputs)
-
         response = openai.Moderation.create(
             model="text-moderation-latest",
             input=inputs
         )
 
-        log.debug("Moderation Response : %s", response)
         ModerationView.view(inputs, response)
         return response

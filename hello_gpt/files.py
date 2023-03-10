@@ -1,5 +1,7 @@
 import openai
 
+from cmds import CommandUtils
+
 '''
 Since: 2023-03-08
 Author: 김회민 ksk7584@gmail.com
@@ -9,6 +11,10 @@ Author: 김회민 ksk7584@gmail.com
 class Files:
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["fl", "file list"],
+        description="Get All File List",
+    )
     def get_file_list() -> list:
         """ 업로드된 모든 파일 List
 
@@ -34,6 +40,10 @@ class Files:
         )
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["fs", "file search"],
+        description="Search One File",
+    )
     def search_file(file_id: str):
         """ File ID 기반 검색
 
