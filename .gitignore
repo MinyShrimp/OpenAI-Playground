@@ -7,4 +7,6 @@
 /venv
 .env*
 
-# idea
+# log
+/log
+*.log

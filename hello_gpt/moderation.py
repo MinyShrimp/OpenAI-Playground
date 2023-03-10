@@ -14,9 +14,10 @@ class Moderation:
     @staticmethod
     @CommandUtils.add_decorator(
         keys=["m", "mo", "moderation"],
-        description="Moderation Prompt - Option: '-inputs \"Hello World\"'"
+        description="Moderation Prompt - Option: '-inputs \"Hello World\"'",
+        view_func=ModerationView.view
     )
-    def call(inputs: list):
+    def check_value(inputs: list):
         """ 해당 요청에 대한 검증
 
         :param inputs: 검증을 원하는 데이터
@@ -28,5 +29,7 @@ class Moderation:
             input=inputs
         )
 
-        ModerationView.view(inputs, response)
+        for _input, result in zip(inputs, response["results"]):
+            result["value"] = _input
+
         return response

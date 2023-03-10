@@ -1,11 +1,10 @@
 from common import EnvLoader
 from cmds import CommandProcessor
-from hello_gpt import GptConfig
+from hello_gpt import *
 
 
 def init():
     EnvLoader.load()
-    GptConfig.config()
 
 
 def run():

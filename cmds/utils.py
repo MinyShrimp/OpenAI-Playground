@@ -16,9 +16,11 @@ class CommandUtils:
     __processor = CommandProcessor()
 
     @staticmethod
-    def cmd_proxy_factory(gpt_proxy):
+    def cmd_proxy_factory(gpt_proxy, gpt_view_proxy):
         def measure_proxy(**kwargs):
             result = measure(gpt_proxy, **kwargs)
+            if gpt_view_proxy is not None:
+                gpt_view_proxy(result)
             log.debug("[%s.%s] result = %s", gpt_proxy.__module__, gpt_proxy.__name__, result)
             return CommandProcessor.ReturnStatus.OK
 
@@ -47,10 +49,11 @@ class CommandUtils:
             keys: list[str],
             description: str,
             do: Callable,
+            view: Callable
     ):
         cls.__processor.add_command(keys, {
             "description": description,
-            "do": cls.cmd_proxy_factory(do)
+            "do": cls.cmd_proxy_factory(do, view)
         })
 
     @classmethod
@@ -58,8 +61,9 @@ class CommandUtils:
             cls,
             keys: list[str],
             description: str,
+            view_func=None
     ):
         def __decorator(func):
-            cls.add_helper(keys, description, do=func)
+            cls.add_helper(keys, description, do=func, view=view_func)
 
         return __decorator
