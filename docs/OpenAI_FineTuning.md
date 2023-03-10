@@ -136,7 +136,7 @@ $ openai api fine_tunes.cancel -i <YOUR_FINE_TUNE_JOB_ID>
 
 | Job Status | pending | running | succeeded | failed |
 |------------|---------|---------|-----------|--------|
-| 설명         | 일시 정지   | 진행 중    | 완료        | 실패     |
+| 설명         | 대기      | 진행 중    | 완료        | 실패     |
 
 ## Fine Tuning 모델 사용
 

@@ -1,4 +1,9 @@
 import openai
+from requests.exceptions import ChunkedEncodingError
+
+from common import log
+from cmds import CommandUtils
+from .fine_tuning_view import FineTuneView
 
 '''
 Since: 2023-03-08
@@ -9,6 +14,11 @@ Author: 김회민 ksk7584@gmail.com
 class FineTuning:
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["ftcr", "fine create"],
+        description="Create Fine-Tuning Model",
+        view_func=FineTuneView.create_view
+    )
     def create_fine_tune(
             train_file_id: str,
             validation_file_id: str = None,
@@ -30,6 +40,11 @@ class FineTuning:
         )
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["ftcc", "fine cancel"],
+        description="Cancel Fine-Tuning Job",
+        view_func=FineTuneView.cancel_view
+    )
     def cancel_fine_tune(
             fine_tune_id: str
     ):
@@ -45,16 +60,53 @@ class FineTuning:
         )
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["ftst", "fine stream"],
+        description="Stream Creating Fine-Tuning Job"
+    )
+    def stream_fine_tune(
+            fine_tune_id: str
+    ):
+        _jobs = []
+        print("Stream Fine-Tune Job...")
+        while True:
+            try:
+                stream = openai.FineTune.stream_events(
+                    id=fine_tune_id
+                )
+
+                for i, v in enumerate(stream):
+                    msg = v["message"]
+                    if i >= len(_jobs):
+                        _jobs.append(msg)
+                        print(msg)
+                        log.debug(msg)
+                    if msg == "Fine-tune succeeded":
+                        return _jobs
+            except ChunkedEncodingError as e:
+                log.warning(e)
+
+    @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["ftl", "fine list"],
+        description="Get All Creating Fine-Tune Jobs",
+        view_func=FineTuneView.list_view
+    )
     def get_list():
         """ Fine-Tunes Model List
 
         GET https://api.openai.com/v1/fine-tunes
 
-        :return: { "object": "list", "data": [ { Fine-Tune 정보 } ] }
+        :return: [ { Fine-Tune 정보 } ] }
         """
-        return openai.FineTune.list()
+        return openai.FineTune.list()["data"]
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["fts", "fine search"],
+        description="Search Creating Fine-Tune Job",
+        view_func=FineTuneView.item_view
+    )
     def get_one(
             fine_tune_id: str
     ):
@@ -70,6 +122,11 @@ class FineTuning:
         )
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["fte", "fine event"],
+        description="Get Creating Fine-Tune Job Events",
+        view_func=FineTuneView.events_view
+    )
     def get_one_events(
             fine_tune_id: str
     ) -> list:
@@ -80,11 +137,15 @@ class FineTuning:
         :param fine_tune_id: 조회를 원하는 Fine-Tune ID
         :return: list 형태로 반환
         """
-        return openai.FineTune.stream_events(
+        return openai.FineTune.retrieve(
             id=fine_tune_id
-        )
+        )["events"]
 
     @staticmethod
+    @CommandUtils.add_decorator(
+        keys=["ftd", "fine delete"],
+        description="Delete Created Fine-Tune Model",
+    )
     def delete_model(
             model_id: str,
             model_name: str = "curie"

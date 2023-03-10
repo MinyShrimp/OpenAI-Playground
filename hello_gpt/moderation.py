@@ -1,7 +1,7 @@
 import openai
 
 from cmds import CommandUtils
-from hello_gpt import ModerationView
+from .moderation_view import ModerationView
 
 '''
 Since: 2023-03-07
@@ -14,7 +14,7 @@ class Moderation:
     @staticmethod
     @CommandUtils.add_decorator(
         keys=["m", "mo", "moderation"],
-        description="Moderation Prompt - Option: '-inputs \"Hello World\"'",
+        description="Moderation Prompt",
         view_func=ModerationView.view
     )
     def check_value(inputs: list):

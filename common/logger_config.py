@@ -39,7 +39,7 @@ class Logger(logging.Logger):
     def __init__(self):
         super().__init__(name="")
 
-        self.setLevel(logging.DEBUG)
+        self.setLevel(logging.INFO)
         formatter = CustomFormatter('[%(asctime)s] %(levelname)7s: %(filename)20s - %(message)s')
 
         stream_handler = logging.StreamHandler()
