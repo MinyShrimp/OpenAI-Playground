@@ -25,7 +25,7 @@ class CommandUtils:
             sig = inspect.signature(gpt_proxy)
             bound_args = sig.bind(**kwargs)
             bound_args.apply_defaults()
-            
+
             for param_name, param_value in bound_args.arguments.items():
                 target_param_type = sig.parameters[param_name].annotation
                 if target_param_type is str:
@@ -39,13 +39,11 @@ class CommandUtils:
     @classmethod
     def add_helper(
             cls,
-            key: str,
+            keys: list[str],
             description: str,
-            do: Callable,
-            supports: list[str]
+            do: Callable
     ):
-        cls.__processor.add_command(key, {
+        cls.__processor.add_command(keys, {
             "description": description,
-            "do": cls.cmd_proxy_factory(do),
-            "supports": supports if supports is not None else []
+            "do": cls.cmd_proxy_factory(do)
         })

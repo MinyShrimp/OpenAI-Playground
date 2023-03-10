@@ -58,11 +58,7 @@ class CommandProcessor(object):
             self.__COMMANDS["h"]["do"] = self.__help_do
             self.__COMMANDS["q"]["do"] = self.__quit_do
 
-            self.__COMMANDS_MULTI.bulk_add(self.__COMMANDS)
-            self.__COMMANDS_DECS = [
-                self.__get_help_str(keys, value["description"]) for keys, value in self.__COMMANDS_MULTI.items()
-            ]
-
+            self.bulk_add_commands(self.__COMMANDS)
             log.debug("Finished Initalizing %s", cls.__INSTANCE)
 
     def __new__(cls):
@@ -77,10 +73,8 @@ class CommandProcessor(object):
     def __get_help_str(keys: list[str], desc: str):
         return "- '{}': {}".format("', '".join(keys), desc)
 
-    def __add_decs(self, cmds: list[tuple[list[str], dict]]):
-        self.__COMMANDS_DECS.append(
-            *[self.__get_help_str(keys, value["description"]) for keys, value in cmds]
-        )
+    def __add_decs(self, cmd: tuple[list[str], dict]):
+        self.__COMMANDS_DECS.append(self.__get_help_str(cmd[0], cmd[1]["description"]))
 
     def __help_do(self, *args, **params) -> ReturnStatus:
         """ "help" Command 처리
@@ -101,18 +95,22 @@ class CommandProcessor(object):
         return CommandProcessor.ReturnStatus.QUIT
 
     def bulk_add_commands(self, _dict: dict):
-        results = self.__COMMANDS_MULTI.bulk_add(_dict)
-        self.__add_decs(results)
+        results = []
+        for key, value in _dict.items():
+            _keys = [key, *value.pop("supports")]
+            result = self.__COMMANDS_MULTI.add(_keys, value)
+            self.__add_decs(result)
+            results.append(result)
         return results
 
-    def add_command(self, key: str, value: dict):
+    def add_command(self, keys: list[str], value: dict):
         """ 커멘드 1 개 추가
-        :param key: commands main key
-        :param value: { "description": str, "supports": list[str], "do": Callable[[], None] }
+        :param keys command keys
+        :param value: { "description": str, "do": Callable[[], None] }
         :return: 추가된 커멘드 반환
         """
-        result = self.__COMMANDS_MULTI.add(key, value)
-        self.__add_decs([result])
+        result = self.__COMMANDS_MULTI.add(keys, value)
+        self.__add_decs(result)
         return result
 
     @staticmethod
@@ -165,13 +163,20 @@ class CommandProcessor(object):
         else:
             return value["do"](**_params)
 
+    @staticmethod
+    def __input_data():
+        input_data = ""
+        while input_data == "":
+            input_data = input("Input Command (To help, type 'h' or 'help'): ")
+        return input_data
+
     def process(self):
         log.info("Hello, Welcome to My Program !!!")
         result = CommandProcessor.ReturnStatus.OK
         while result is not CommandProcessor.ReturnStatus.QUIT:
             try:
                 print("=======================================")
-                input_data = input("Input Command (To help, type 'h' or 'help'): ")
+                input_data = self.__input_data()
                 print()
 
                 result = self.__process(input_data)

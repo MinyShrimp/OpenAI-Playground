@@ -19,42 +19,32 @@ class MultiKeyDict:
         self.__VALUE.clear()
         self.__KEYS.clear()
 
-    def __check(self, key: str, value: dict):
+    def __check(self, keys: list, value: dict):
         """ 타입 체크
         """
-        if type(key) is not str or type(value) is not dict:
+        if type(keys) is not list or type(value) is not dict:
             raise TypeError("Not allowed 'key' or 'value' types.")
 
         mykeys = set(self.__KEYS.keys())
-        newkeys = {key} if value.get("supports") is None else {key, *value["supports"]}
-
-        if len(mykeys.intersection(newkeys)) != 0:
-            raise ValueError("Duplicated key and value['supports'].")
+        if len(mykeys.intersection({*keys})) != 0:
+            raise ValueError(f"Duplicated keys {keys}")
 
         return True
 
-    def __add(self, key: str, value: dict) -> tuple[list[str], dict]:
+    def __add(self, keys: list[str], value: dict) -> tuple[list[str], dict]:
         """실제 추가를 위한 로직
         """
-        self.__check(key, value)
+        self.__check(keys, value)
 
         uuid_str = uuid1()
-        self.__KEYS[key] = uuid_str
+        for key in keys:
+            self.__KEYS[key] = uuid_str
         self.__VALUE[uuid_str] = value
-        result = ([key], value)
 
-        if value.get("supports") is not None:
-            for sup in value.pop("supports"):
-                self.__KEYS[sup] = uuid_str
-                result[0].append(sup)
+        return keys, value
 
-        return result
-
-    def add(self, key: str, value: dict) -> tuple[list[str], dict]:
-        return self.__add(key, value)
-
-    def bulk_add(self, _dict: dict) -> list[tuple[list[str], dict]]:
-        return [self.__add(key, value) for key, value in _dict.items()]
+    def add(self, keys: list[str], value: dict) -> tuple[list[str], dict]:
+        return self.__add(keys, value)
 
     def __get(self, key: str):
         if type(key) is not str:

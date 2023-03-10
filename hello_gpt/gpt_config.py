@@ -15,23 +15,20 @@ class GptConfig:
     def config():
         # Moderation
         CommandUtils.add_helper(
-            key="m",
+            keys=["m", "mo", "moderation"],
             description="Moderation Prompt - Option: '-inputs \"Hello World\"'",
-            supports=["mo", "moderation"],
             do=Moderation.call
         )
 
         # File
         CommandUtils.add_helper(
-            key="fl",
+            keys=["fl", "file list"],
             description="Get All File List",
-            supports=["file list"],
             do=Files.get_file_list
         )
 
         CommandUtils.add_helper(
-            key="fs",
+            keys=["fs", "file search"],
             description="Search One File",
-            supports=["file search"],
             do=Files.search_file
         )
