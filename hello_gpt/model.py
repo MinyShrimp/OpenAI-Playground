@@ -3,6 +3,11 @@ import openai
 from cmds import CommandUtils
 from .general_view import GeneralView
 
+"""
+Since: 2023-03-11
+Author: 김회민 ksk7584@gmail.com
+"""
+
 
 class Model:
     @staticmethod
